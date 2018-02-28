@@ -1,5 +1,7 @@
 #Apres installation de la suite ELK#
 
+###Reverse-proxy httpd###
+
 * Allez dans etc/httpd/conf.d
 * Creer un fichier de conf "kibana.conf"
 * Y coller :
@@ -8,17 +10,50 @@
         ServerName kibana.mysite.com
         ServerAdmin admin@mysite.com
 
-	  #
-	  # Proxy
-	  #
 	  ProxyRequests Off
 	  ProxyPass / http://127.0.0.1:5601
 	  ProxyPassReverse / http://127.0.0.1:5601
+
 	  RewriteEngine on
 	  RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
 	  RewriteRule .* http://127.0.0.1:5601%{REQUEST_URI} [P,QSA]
-
 	</VirtualHost>
 
 * Entrer ensuite la commande pour SELinux : 
-	* /usr/sbin/setsebool httpd_can_network_connect 1 
+	* /usr/sbin/setsebool httpd_can_network_connect 1
+
+###Config logstash###
+
+* Voir video de GrafiKArt sur Elastic Stack
+* Allez dans /etc/logstash/conf.d
+* Creer un fichier de conf "logstash-apache.conf"
+* Y coller :
+
+	input {
+	  file {
+	    path => "/var/log/httpd/*_log"
+	    start_position => "beginning"
+	  }
+	}
+
+	filter {
+	  if [path] =~ "access" {
+	    mutate { replace => { "type" => "apache_access" } }
+	    grok {
+	      match => { "message" => "%{COMBINEDAPACHELOG}" }
+	    }
+	  }
+	  date {
+	    match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z" ]
+	  }
+	}
+
+	output {
+	  elasticsearch {
+	    hosts => ["localhost:9200"]
+	  }
+	  stdout { codec => rubydebug }
+	}
+
+* Entrer la commande suivante :
+  * /usr/share/logstash/bin/logstash -f logstash-apache.conf
