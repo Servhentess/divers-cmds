@@ -1,10 +1,14 @@
 #Apres installation de la suite ELK#
 
+* Dans /etc/elasticsearch et /etc/logstash modifier les valeurs de ram dans jvm.options
+* Dans /etc/elasticsearch modifier elasticsearch.yml :
+	* Decommenter et modifier le "network.host:" en localhost
+
 ###Reverse-proxy httpd###
 
 * Allez dans etc/httpd/conf.d
 * Creer un fichier de conf "kibana.conf"
-* Y coller :
+	* Y coller :
 
 	<VirtualHost *:80>
         ServerName kibana.mysite.com
@@ -55,5 +59,5 @@
 	  stdout { codec => rubydebug }
 	}
 
-* Entrer la commande suivante :
+* Entrer la commande suivante en ettent dans /etc/logstash/conf.d:
   * /usr/share/logstash/bin/logstash -f logstash-apache.conf
