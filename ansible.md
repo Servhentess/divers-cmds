@@ -132,3 +132,20 @@ Les variables doivent etre placées dans un repertoire host_vars situé au même
 * Ansible possede des variables et fonction native comme :
 
 >	debug: msg={{ ansible_eth0["ipv4"]["address"] }}
+
+#Diverse commandes#
+
+* Afficher l'IP publique
+
+>	\- name: get public IP
+>	  ipify_facts:
+>	  register: public_ip
+>
+>	\- name: output
+>	  debug: msg="{{ public_ip }}"
+
+* Recuperer des infos sur la machine cliente
+
+>	ansible all -i /etc/ansible/catalogue.ini -m setup -a 'filter=ansible_distribution*'
+
+* "ansible_distribution" donne quel OS est installé, "ansible_processor" donnerait le type de processeur
