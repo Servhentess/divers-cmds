@@ -149,3 +149,15 @@ Les variables doivent etre placées dans un repertoire host_vars situé au même
 >	ansible all -i /etc/ansible/catalogue.ini -m setup -a 'filter=ansible_distribution*'
 
 * "ansible_distribution" donne quel OS est installé, "ansible_processor" donnerait le type de processeur
+
+* Il est possible d'obtenir des infos via les facts des machines clientes :
+  * Creer un dossier /etc/ansible/fact.d
+  * Creer un ou des fichiers .fact au format yml ou ini
+  * Exemple de fichier :
+  
+>	[fact]
+>	ma_variable= back_1
+
+  * Ces fichiers s'appelent avec une commande de type :
+
+>	ansible all -i /etc/ansible/catalogue.ini -m setup -a 'filter=ansible_local'
