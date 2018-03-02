@@ -21,7 +21,7 @@
 #Fichier de playbook pour ansible#
 	
 >	\-\-\-
->	\- name: start update
+>	- name: Update n install Lynx
 >	  hosts: all
 >	  become: true
 >
@@ -29,3 +29,29 @@
 >
 >	  - name: update
 >	    yum: name='*' state=latest
+>
+>	  - name: lynx
+>	    yum: name=lynx state=latest
+>
+>	\- name: Install httpd
+>	  hosts: front_end
+>	  become: true
+>
+>	  tasks:
+>
+>	  - name: httpd
+>	    yum: name=httpd state=latest
+>
+>	  - name: httpd autostart
+>	    service: name=httpd enabled=yes
+>
+>	  - name: httpd started
+>	    service: name=httpd state=started
+
+
+#Fichier de vars pour ansible#
+
+Les variables doivent etre placées dans un repertoire host_vars situé au même endroit que l'inventaire et le playbook. Chaque fichier doit porter le nom du groupe defini dans l'inventaire.
+
+>	ansible_host: 13.88.27.40
+>	ansible_user: servhentess
