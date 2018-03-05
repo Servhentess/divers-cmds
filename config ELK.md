@@ -59,5 +59,5 @@
 	  stdout { codec => rubydebug }
 	}
 
-* Entrer la commande suivante en ettent dans /etc/logstash/conf.d:
-  * /usr/share/logstash/bin/logstash -f logstash-apache.conf
+* Entrer la commande suivante pour demarrer logstash:
+  * /usr/share/logstash/bin/logstash -f /etc/logstash/conf.d/logstash-apache.conf

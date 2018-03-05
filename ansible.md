@@ -51,7 +51,7 @@
 
 #Fichier de vars pour l'inventaire d'ansible#
 
-Les variables doivent etre placées dans un repertoire host_vars situé au même endroit que l'inventaire et le playbook. Chaque fichier doit porter le nom du groupe defini dans l'inventaire.
+Les variables doivent etre placées dans un repertoire host_vars situé au même endroit que l'inventaire et le playbook. Chaque fichier doit porter le nom d'alias defini dans l'inventaire.
 
 >	ansible_host: 13.88.27.40
 >	ansible_user: servhentess
@@ -133,6 +133,23 @@ Les variables doivent etre placées dans un repertoire host_vars situé au même
 
 >	debug: msg={{ ansible_eth0["ipv4"]["address"] }}
 
+
+#Remplacer le contenu dans un fichier#
+
+>	\-\-\-
+>	- name: Copy d'un fichier fact vers remote
+>	  hosts: all
+>	  become: true
+>
+>	  tasks:
+>
+>	  - name: Replace a line in file
+>	    replace:
+>	      path: /etc/test/test
+>	      regexp: '#network.host: 127.0.0.1'
+>	      replace: 'network.host: localhost'
+>	      backup: yes
+
 #Diverse commandes#
 
 * Afficher l'IP publique
@@ -161,3 +178,10 @@ Les variables doivent etre placées dans un repertoire host_vars situé au même
   * Ces fichiers s'appelent avec une commande de type :
 
 >	ansible all -i /etc/ansible/catalogue.ini -m setup -a 'filter=ansible_local'
+
+* Telecharger un fichier :
+
+>	- name: Download Elasticsearch
+>	  get_url:
+>	    url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.2.rpm
+>	    dest: /tmp
