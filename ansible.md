@@ -185,3 +185,63 @@ Les variables doivent etre placées dans un repertoire host_vars situé au même
 >	  get_url:
 >	    url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.2.rpm
 >	    dest: /tmp
+
+* Copier une cles publique sur une machine distante :
+
+>	- name: Copy ssh key
+>	  hosts: all
+>	  become: true
+>
+>	  tasks:
+>
+>	  - name: Create user on vm-slave
+>	    user:
+>	      name: test1
+>
+>	  - name: copy private key
+>	    authorized_key:
+>	      user: test1
+>	      state: present
+>	      key: '{{ item }}'
+>	      exclusive: True
+>	    with_file:
+>	      - '~/.ssh/CHEMIN VERS .PUB DE LA CLES'
+
+* On se connect ensuite de cette facon :
+
+>	ssh -i ~/.ssh/CHEMIN VERS CLES PRIVE (SANS .PUB) test1@13.88.27.40
+
+* Utiliser les lookup :
+
+>	\-\-\-
+>	- name: Test lookup
+>	  hosts: all
+>	  become: true
+>
+>	  tasks:
+>
+>	  - name: file
+>	    debug:
+>	      msg: "{{ lookup('file', 'lookup/file') }}"
+>
+>	  - name: password (no register)
+>	    debug:
+>	      msg: "{{ lookup('password', '/dev/null') }}"
+>
+>	  - name: current date
+>	    debug:
+>	      msg: "{{ lookup('pipe', 'date') }}"
+>
+>	  - name: csv parse
+>	    debug:
+>	      msg: "{{ lookup('csvfile', 'Li file=lookup/csv delimiter=, col=2') }}"
+>
+>	  - name: ini
+>	    debug:
+>	      msg: "{{ lookup('ini', 'user section=integration file=lookup/ini') }}"
+>
+>	      msg: "{{ lookup('dig', 'google.fr') }}"
+>
+>	  - name: ip to dns
+>	    debug:
+>	      msg: "{{ lookup('dig', '52.138.207.44') }}"
