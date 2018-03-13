@@ -245,3 +245,7 @@ Les variables doivent etre placées dans un repertoire host_vars situé au même
 >	  - name: ip to dns
 >	    debug:
 >	      msg: "{{ lookup('dig', '52.138.207.44') }}"
+
+* Lister les filesystem et leur point de montage:
+
+>	dh -f
